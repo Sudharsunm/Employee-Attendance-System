@@ -1,34 +1,36 @@
-// src/pages/manager/AllEmployeesAttendance.jsx
+// src/pages/employee/AttendanceHistory.jsx
 import React, { useEffect } from "react";
-import Navbar from "../../components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllAttendance } from "../../redux/slices/features/attendance/attendanceSlice";
+import { fetchMyHistory } from "../../redux/slices/features/attendance/attendanceSlice";
+import Navbar from "../../components/Navbar";
 
-export default function AllEmployeesAttendance() {
+export default function AttendanceHistory() {
   const dispatch = useDispatch();
-  const { allRecords } = useSelector((s) => s.attendance);
+  const { myHistory } = useSelector((s) => s.attendance);
 
   useEffect(() => {
-    dispatch(fetchAllAttendance());
+    dispatch(fetchMyHistory());
   }, [dispatch]);
 
   return (
     <div>
       <Navbar />
       <div style={{ padding: 20 }}>
-        <h2>All Employees Attendance</h2>
+        <h2>My Attendance History</h2>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
-            <tr><th>Employee</th><th>Date</th><th>Check In</th><th>Check Out</th><th>Status</th></tr>
+            <tr>
+              <th>Date</th><th>Check In</th><th>Check Out</th><th>Status</th><th>Hours</th>
+            </tr>
           </thead>
           <tbody>
-            {allRecords.map((r) => (
-              <tr key={r._id}>
-                <td>{r.user?.name || r.user}</td>
+            {myHistory.map((r) => (
+              <tr key={r._id || r.date}>
                 <td>{r.date || new Date(r.time).toLocaleDateString()}</td>
                 <td>{r.checkInTime ? new Date(r.checkInTime).toLocaleString() : "-"}</td>
                 <td>{r.checkOutTime ? new Date(r.checkOutTime).toLocaleString() : "-"}</td>
                 <td>{r.status}</td>
+                <td>{r.totalHours || "-"}</td>
               </tr>
             ))}
           </tbody>
